@@ -11,3 +11,7 @@ app/build/
 
 # OS files
 .DS_Store
+
+# Personal files — not for version control
+DEVLOG.md
+*.pdf
