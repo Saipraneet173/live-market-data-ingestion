@@ -2,6 +2,8 @@ package com.citi.marketdata.service;
 
 import com.citi.marketdata.model.TickData;
 
+import java.util.function.Consumer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,6 +35,11 @@ public class MarketDataPoller {
 
     private String sessionCookie;
     private String crumb;
+    private Consumer<TickData> onTick;
+
+    public void setOnTick(Consumer<TickData> onTick) {
+        this.onTick = onTick;
+    }
 
     public void start() {
         try {
@@ -97,6 +104,9 @@ public class MarketDataPoller {
         Instant timestamp = Instant.now();
         TickData tick = new TickData(timestamp, SYMBOL, price);
         queue.offer(tick);
+        if(onTick != null){
+            onTick.accept(tick);
+        }
         String tag = simulated ? " [SIMULATED]" : "";
         System.out.println("Enqueued" + tag + ": " + tick + " | Queue size: " + queue.size());
     }
